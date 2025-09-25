@@ -132,16 +132,17 @@
             font-size: 13px;
         }
         .footer {
-            margin-top: 10px;
+            margin-top: 20px;
             display: flex;
-            justify-content: flex-start; /* Left side */
+            justify-content: flex-end; /* Right align */
         }
         .signature {
-            text-align: left; /* Signature left aligned */
+            text-align: right; 
+            font-size: 12px; /* Smaller font for signature */
+            line-height: 1.4;
         }
         .signature p {
-            margin: 3px 0;
-            font-size: 13px;
+            margin: 2px 0;
         }
         .controls {
             display: flex;
@@ -160,6 +161,9 @@
         .editable-amount {
             width: 120px;
             display: inline-block;
+        }
+        .copy-section {
+            margin-top: 50px; /* more space below signature */
         }
         
         @media print {
@@ -203,13 +207,17 @@
                 text-align: center; /* Sanction Memo title center */
             }
             .footer {
-                justify-content: flex-start; /* Signature left */
+                justify-content: flex-end; /* Right side */
             }
             .signature {
-                text-align: left;
+                text-align: right;
+                font-size: 11px;
             }
             .result {
-                margin-top: 5px; /* Kam gap */
+                margin-top: 5px; /* less gap */
+            }
+            .copy-section {
+                margin-top: 40px;
             }
         }
     </style>
@@ -362,7 +370,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group copy-section">
             <label for="copyTo">Copy to:</label>
             <input type="text" id="copyTo" value="The Treasury Officer, Belonia Treasury for kind information please.">
         </div>
