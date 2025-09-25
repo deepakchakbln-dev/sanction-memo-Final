@@ -468,12 +468,12 @@
             let roadRoller = parseFloat(document.getElementById('roadRoller').value) || 0;
             let bitumenDrum = parseFloat(document.getElementById('bitumenDrum').value) || 0;
 
-            let incomeTax = gross * (incomeTaxRate / 100);
-            let sd = gross * (sdRate / 100);
-            let labourCess = gross * (labourCessRate / 100);
-            let gst = gross * (gstRate / 100);
-
-            let netAmount = gross - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum;
+            // ✅ Round off all calculations
+    let incomeTax = Math.round(gross * (incomeTaxRate / 100));
+    let sd = Math.round(gross * (sdRate / 100));
+    let labourCess = Math.round(gross * (labourCessRate / 100));
+    let gst = Math.round(gross * (gstRate / 100));
+    let netAmount = Math.round(gross - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum);
 
             document.getElementById('sanctionAmount').innerText = formatCurrency(gross);
             document.getElementById('sanctionAmountText').innerText = formatNumber(gross);
