@@ -246,7 +246,7 @@
       <div class="memo-info">
         <div>
           <strong>Sanction Memo No:</strong> F.5(11)/EE(PWD)/R&B/BLN/DIVN/
-          <span id="memoSuffix" style="font-weight: bold;">SYS-2025-001</span>
+          <span id="memoSuffix" style="font-weight: bold;">PWD-2025-001</span>
         </div>
         <div>
           <strong>Dated:</strong> <input type="date" id="memoDate" style="width: 150px; display: inline;">
@@ -415,7 +415,7 @@
       // Format the ID with leading zeros (e.g., 001, 002, etc.)
       const formattedId = newId.toString().padStart(3, '0');
       
-      return `SYS-${year}-${formattedId}`;
+      return `PWD-${year}-${formattedId}`;
     }
 
     // Set the auto-generated ID and date when the page loads
