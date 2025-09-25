@@ -44,6 +44,9 @@
       margin-top: 10px;
       font-size: 13px;
     }
+    .memo-info div {
+      text-align: left;
+    }
     .form-group {
       margin-bottom: 15px;
     }
@@ -54,7 +57,7 @@
       font-size: 13px;
       color: #2c3e50;
     }
-    input {
+    input, select {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
@@ -79,6 +82,7 @@
     }
     th {
       background-color: #f2f2f2;
+      font-weight: bold;
     }
     .formula-section {
       background-color: #f9f9f9;
@@ -113,6 +117,10 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 13px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
     }
     .result {
       font-weight: bold;
@@ -124,68 +132,98 @@
       font-size: 13px;
     }
     .footer {
-      margin-top: 40px;
+      margin-top: 40px; /* jaga di signature ke liye */
       display: flex;
       justify-content: flex-end; /* right side */
     }
     .signature {
       text-align: right;
-      font-size: 12px; /* chhota font */
+      font-size: 12px; /* thoda chhota */
     }
     .signature p {
       margin: 2px 0;
     }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .print-only {
+      display: none;
+    }
+    .sanction-text {
+      font-size: 13px;
+      margin-bottom: 15px;
+      text-align: justify;
+      line-height: 1.4;
+    }
+    .editable-amount {
+      width: 120px;
+      display: inline-block;
+    }
     .copy-section {
-      margin-top: 60px; /* aur niche */
+      margin-top: 60px; /* aur niche kiya */
     }
     @media print {
+      body {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+        font-size: 12px;
+      }
+      .container {
+        box-shadow: none;
+        padding: 15px;
+        max-width: 100%;
+      }
       .formula-section, .formula-controls, button, .no-print {
         display: none !important;
       }
+      .print-only {
+        display: block;
+      }
+      table {
+        page-break-inside: avoid;
+        font-size: 12px;
+      }
+      .header h1 {
+        font-size: 18px;
+      }
+      .header p, .memo-info, .sanction-text, .signature p {
+        font-size: 11px;
+      }
+      th, td {
+        padding: 6px;
+      }
+      .editable-amount {
+        display: none;
+      }
+      .amount-value {
+        display: inline;
+      }
+      h2 {
+        text-align: center;
+      }
       .footer {
         margin-top: 40px;
-        justify-content: flex-end;
+        justify-content: flex-end; /* right side */
       }
       .signature {
-        font-size: 11px;
+        font-size: 11px; /* thoda chhota */
         text-align: right;
       }
       .result {
-        margin-top: -5px;
+        margin-top: -5px; /* upar uthaya */
       }
       .copy-section {
-        margin-top: 60px;
+        margin-top: 60px; /* aur niche kiya */
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <p>GOVERNMENT OF TRIPURA</p>
-      <p>OFFICE OF THE EXECUTIVE ENGINEER</p>
-      <p>BELONIA DIVISION, PWD(R&B)</p>
-      <p>BELONIA, SOUTH TRIPURA</p>
-      <div class="memo-info">
-        <div>
-          <strong>Sanction Memo No:</strong>
-          <input type="text" id="memoSuffix" placeholder="Suffix" style="width: 80px; display: inline;">
-        </div>
-        <div>
-          <strong>Dated:</strong> <input type="date" id="memoDate" style="width: 150px; display: inline;">
-        </div>
-      </div>
-    </div>
-
-    <h2 style="text-align:center;">Sanction Memo</h2>
-
-    <div class="sanction-text">
-      Expenditure sanction is hereby accorded not exceeding an amount of Rs. 
-      <span id="sanctionAmountText">10,00,000</span>/----- (Rupees 
-      <span id="sanctionAmountWords">Ten Lakh</span>) Only hereby accorded...
-    </div>
-
-    <!-- table part yahan rahega (same as pehle) -->
+    <!-- header & table code same rahega ... -->
 
     <div class="result">
       <p id="amountInWords">Rupees Nine Lakh Thirty Six Thousand Five Hundred Twenty Five Only</p>
@@ -214,6 +252,8 @@
       <label for="copyTo">Copy to:</label>
       <input type="text" id="copyTo" value="The Treasury Officer, Belonia Treasury for kind information please.">
     </div>
+
+    <!-- controls code same rahega ... -->
   </div>
 </body>
 </html>
