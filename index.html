@@ -237,7 +237,7 @@
       <div class="memo-info">
         <div>
           <strong>Sanction Memo No:</strong> F.5(11)/EE(PWD)/R&B/BLN/DIVN/
-          <input type="text" id="memoSuffix" placeholder="Suffix" style="width: 80px; display: inline;">
+          <span id="memoSuffix" style="font-weight: bold;">SYS-2025-001</span>
         </div>
         <div>
           <strong>Dated:</strong> <input type="date" id="memoDate" style="width: 150px; display: inline;">
@@ -391,6 +391,30 @@
   </div>
 
   <script>
+    // Auto-generate system ID
+    function generateSystemId() {
+      const now = new Date();
+      const year = now.getFullYear();
+      
+      // Get the last used ID from localStorage or start from 1
+      let lastId = localStorage.getItem('lastSanctionId') || 0;
+      let newId = parseInt(lastId) + 1;
+      
+      // Store the new ID for next time
+      localStorage.setItem('lastSanctionId', newId);
+      
+      // Format the ID with leading zeros (e.g., 001, 002, etc.)
+      const formattedId = newId.toString().padStart(3, '0');
+      
+      return `SYS-${year}-${formattedId}`;
+    }
+
+    // Set the auto-generated ID when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const systemId = generateSystemId();
+      document.getElementById('memoSuffix').textContent = systemId;
+    });
+
     function formatCurrency(amount) {
       return '₹' + new Intl.NumberFormat('en-IN', {
         minimumFractionDigits: 2,
