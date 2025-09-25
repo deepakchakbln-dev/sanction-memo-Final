@@ -125,19 +125,19 @@
         .result {
             font-weight: bold;
             background-color: #e9f7e9;
-            padding: 10px;
+            padding: 6px;
             border-radius: 4px;
-            margin-top: 8px;
+            margin-top: 5px;
             border-left: 4px solid #2ecc71;
             font-size: 13px;
         }
         .footer {
-            margin-top: 15px;
+            margin-top: 10px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Left side */
         }
         .signature {
-            text-align: center;
+            text-align: left; /* Signature left aligned */
         }
         .signature p {
             margin: 3px 0;
@@ -199,6 +199,18 @@
             .amount-value {
                 display: inline;
             }
+            h2 {
+                text-align: center; /* Sanction Memo title center */
+            }
+            .footer {
+                justify-content: flex-start; /* Signature left */
+            }
+            .signature {
+                text-align: left;
+            }
+            .result {
+                margin-top: 5px; /* Kam gap */
+            }
         }
     </style>
 </head>
@@ -221,7 +233,7 @@
             </div>
         </div>
 
-        <h2 style="font-size: 16px; margin-bottom: 10px;">Sanction Memo</h2>
+        <h2 style="font-size: 16px; margin-bottom: 10px; text-align: center;">Sanction Memo</h2>
         
         <div class="sanction-text">
             Expenditure sanction is hereby accorded not exceeding an amount of Rs. <span id="sanctionAmountText">10,00,000</span>/----- (Rupees <span id="sanctionAmountWords">Ten Lakh</span>) Only hereby accorded to drawn in Fully Voucher Bill bearing the cost for the work.
@@ -435,127 +447,60 @@
             }
             
             let result = convert(Math.floor(num));
-            return result.charAt(0).toUpperCase() + result.slice(1);
+            return result.trim();
         }
 
-        function calculateValues() {
-            const grossAmount = parseFloat(document.getElementById('grossAmount').value) || 0;
-            const incomeTaxRate = parseFloat(document.getElementById('incomeTaxRate').value) || 0;
-            const sdRate = parseFloat(document.getElementById('sdRate').value) || 0;
-            const labourCessRate = parseFloat(document.getElementById('labourCessRate').value) || 0;
-            const gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
-            
-            const timeExtension = parseFloat(document.getElementById('timeExtension').value) || 0;
-            const roadRoller = parseFloat(document.getElementById('roadRoller').value) || 0;
-            const bitumenDrum = parseFloat(document.getElementById('bitumenDrum').value) || 0;
-            
-            const incomeTax = grossAmount * incomeTaxRate / 100;
-            const sd = grossAmount * sdRate / 100;
-            const labourCess = grossAmount * labourCessRate / 100;
-            const gst = grossAmount * gstRate / 100;
-            
-            const netAmount = grossAmount - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum;
-            
-            document.getElementById('sanctionAmount').textContent = formatCurrency(grossAmount);
-            document.getElementById('incomeTax').textContent = formatCurrency(incomeTax);
-            document.getElementById('sd').textContent = formatCurrency(sd);
-            document.getElementById('labourCess').textContent = formatCurrency(labourCess);
-            document.getElementById('gst').textContent = formatCurrency(gst);
-            
-            document.getElementById('timeExtensionAmount').textContent = formatCurrency(timeExtension);
-            document.getElementById('roadRollerAmount').textContent = formatCurrency(roadRoller);
-            document.getElementById('bitumenDrumAmount').textContent = formatCurrency(bitumenDrum);
-            
-            document.querySelectorAll('.amount-value')[0].textContent = formatCurrency(timeExtension);
-            document.querySelectorAll('.amount-value')[1].textContent = formatCurrency(roadRoller);
-            document.querySelectorAll('.amount-value')[2].textContent = formatCurrency(bitumenDrum);
-            
-            document.getElementById('netAmount').textContent = formatCurrency(netAmount);
-            
-            document.getElementById('sanctionAmountText').textContent = formatNumber(grossAmount);
-            document.getElementById('sanctionAmountWords').textContent = numberToWordsSanction(grossAmount);
-            
-            document.getElementById('amountInWords').textContent = numberToWords(netAmount);
+        function updateCalculations() {
+            let gross = parseFloat(document.getElementById('grossAmount').value) || 0;
+            let incomeTaxRate = parseFloat(document.getElementById('incomeTaxRate').value) || 0;
+            let sdRate = parseFloat(document.getElementById('sdRate').value) || 0;
+            let labourCessRate = parseFloat(document.getElementById('labourCessRate').value) || 0;
+            let gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
+            let timeExtension = parseFloat(document.getElementById('timeExtension').value) || 0;
+            let roadRoller = parseFloat(document.getElementById('roadRoller').value) || 0;
+            let bitumenDrum = parseFloat(document.getElementById('bitumenDrum').value) || 0;
+
+            let incomeTax = gross * (incomeTaxRate / 100);
+            let sd = gross * (sdRate / 100);
+            let labourCess = gross * (labourCessRate / 100);
+            let gst = gross * (gstRate / 100);
+
+            let netAmount = gross - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum;
+
+            document.getElementById('sanctionAmount').innerText = formatCurrency(gross);
+            document.getElementById('sanctionAmountText').innerText = formatNumber(gross);
+            document.getElementById('sanctionAmountWords').innerText = numberToWordsSanction(gross);
+            document.getElementById('incomeTax').innerText = formatCurrency(incomeTax);
+            document.getElementById('sd').innerText = formatCurrency(sd);
+            document.getElementById('labourCess').innerText = formatCurrency(labourCess);
+            document.getElementById('gst').innerText = formatCurrency(gst);
+            document.getElementById('timeExtensionAmount').innerText = formatCurrency(timeExtension);
+            document.getElementById('roadRollerAmount').innerText = formatCurrency(roadRoller);
+            document.getElementById('bitumenDrumAmount').innerText = formatCurrency(bitumenDrum);
+            document.getElementById('netAmount').innerText = formatCurrency(netAmount);
+            document.getElementById('amountInWords').innerText = numberToWords(netAmount);
         }
 
-        document.getElementById('memoDate').valueAsDate = new Date();
+        document.querySelectorAll('#grossAmount, #incomeTaxRate, #sdRate, #labourCessRate, #gstRate, #timeExtension, #roadRoller, #bitumenDrum')
+            .forEach(el => el.addEventListener('input', updateCalculations));
 
-        document.getElementById('grossAmount').addEventListener('input', calculateValues);
-        document.getElementById('updateFormulas').addEventListener('click', calculateValues);
-        
-        document.getElementById('timeExtension').addEventListener('input', calculateValues);
-        document.getElementById('roadRoller').addEventListener('input', calculateValues);
-        document.getElementById('bitumenDrum').addEventListener('input', calculateValues);
-        
-        document.getElementById('resetFormulas').addEventListener('click', function() {
+        document.getElementById('updateFormulas').addEventListener('click', updateCalculations);
+
+        document.getElementById('resetFormulas').addEventListener('click', () => {
             document.getElementById('incomeTaxRate').value = 0.8475;
             document.getElementById('sdRate').value = 2.5;
             document.getElementById('labourCessRate').value = 1;
             document.getElementById('gstRate').value = 2;
-            document.getElementById('timeExtension').value = 0;
-            document.getElementById('roadRoller').value = 0;
-            document.getElementById('bitumenDrum').value = 0;
-            calculateValues();
+            updateCalculations();
         });
 
-        document.getElementById('printBtn').addEventListener('click', function() {
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+        document.getElementById('previewBtn').addEventListener('click', () => {
             window.print();
         });
 
-        document.getElementById('previewBtn').addEventListener('click', function() {
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Sanction Memo Print Preview</title>
-                    <style>
-                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; font-size: 12px; }
-                        .container { max-width: 100%; }
-                        .header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
-                        .header h1 { margin: 0; font-size: 18px; color: #2c3e50; }
-                        .header p { margin: 2px 0; font-size: 11px; }
-                        .memo-info { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; }
-                        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 11px; }
-                        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-                        th { background-color: #f2f2f2; font-weight: bold; }
-                        .result { font-weight: bold; background-color: #e9f7e9; padding: 8px; border-radius: 4px; margin-top: 8px; border-left: 4px solid #2ecc71; font-size: 11px; }
-                        .sanction-text { font-size: 11px; margin-bottom: 10px; text-align: justify; line-height: 1.4; }
-                        .footer { margin-top: 10px; }
-                        .signature { text-align: center; }
-                        .signature p { margin: 2px 0; font-size: 11px; }
-                        .editable-amount { display: none; }
-                        .amount-value { display: inline; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                        ${document.querySelector('.container').innerHTML}
-                    </div>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.focus();
-        });
-
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            alert('Data saved successfully!');
-        });
-
-        document.getElementById('clearBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to clear the form?')) {
-                document.getElementById('grossAmount').value = '';
-                document.getElementById('payeeName').value = '';
-                document.getElementById('memoSuffix').value = '';
-                document.getElementById('accountHead').value = '';
-                document.getElementById('timeExtension').value = 0;
-                document.getElementById('roadRoller').value = 0;
-                document.getElementById('bitumenDrum').value = 0;
-                calculateValues();
-            }
-        });
-
-        calculateValues();
+        updateCalculations();
     </script>
 </body>
 </html>
