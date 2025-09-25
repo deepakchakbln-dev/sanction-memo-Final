@@ -171,6 +171,15 @@
     .copy-section {
       margin-top: 50px;
     }
+    
+    /* ✅ Date input styling - border removed and text bold */
+    #memoDate {
+      border: none;
+      font-weight: bold;
+      width: 150px;
+      display: inline;
+    }
+    
     @media print {
       body {
         background-color: white;
@@ -409,10 +418,15 @@
       return `SYS-${year}-${formattedId}`;
     }
 
-    // Set the auto-generated ID when the page loads
+    // Set the auto-generated ID and date when the page loads
     document.addEventListener('DOMContentLoaded', function() {
       const systemId = generateSystemId();
       document.getElementById('memoSuffix').textContent = systemId;
+      
+      // Set current date automatically
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      document.getElementById('memoDate').value = formattedDate;
     });
 
     function formatCurrency(amount) {
