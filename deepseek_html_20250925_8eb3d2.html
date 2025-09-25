@@ -69,6 +69,12 @@
       border-color: #3498db;
       box-shadow: 0 0 3px rgba(52, 152, 219, 0.3);
     }
+    /* ✅ Head of Account input ka border hata diya */
+    #accountHead {
+      border: none;
+      outline: none;
+      border-bottom: 1px solid #ddd; /* optional underline */
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -165,14 +171,6 @@
     .copy-section {
       margin-top: 50px;
     }
-    /* Remove borders for fixed fields */
-    .fixed-field {
-      border: none !important;
-      background: transparent !important;
-      padding: 0 !important;
-      font-size: 13px;
-      width: auto;
-    }
     @media print {
       body {
         background-color: white;
@@ -250,20 +248,43 @@
     <h2 style="font-size: 16px; margin-bottom: 10px; text-align: center;">Sanction Memo</h2>
 
     <div class="sanction-text">
-      Expenditure sanction is hereby accorded not exceeding an amount of Rs. 
-      <span id="sanctionAmountText">10,00,000</span>/----- (Rupees 
+      Expenditure sanction is hereby accorded not exceeding an amount of Rs.
+      <span id="sanctionAmountText">10,00,000</span>/----- (Rupees
       <span id="sanctionAmountWords">Ten Lakh</span>) Only hereby accorded to drawn in Fully Voucher Bill bearing the cost for the work.
     </div>
 
-    <!-- Name of Work (Fixed text, no border) -->
     <div class="form-group">
       <label for="workName">Name of Work:</label>
-      <span id="workName" class="fixed-field">FDR / Nto. Of different roads under Rajnagar Sub-Division</span>
+      <input type="text" id="workName" value="FDR / Nto. Of different roads under Rajnagar Sub-Division">
     </div>
 
     <div class="form-group no-print">
       <label for="grossAmount">Gross Amount (₹):</label>
       <input type="number" id="grossAmount" value="1000000" min="0" step="1000">
+    </div>
+
+    <div class="formula-section no-print">
+      <h3 style="font-size: 14px; margin-top: 0;">Deduction Formulas</h3>
+      <div class="formula-item">
+        <label for="incomeTaxRate">Income Tax Rate (%):</label>
+        <input type="number" id="incomeTaxRate" value="0.8475" min="0" max="100" step="0.0001">
+      </div>
+      <div class="formula-item">
+        <label for="sdRate">SD Rate (%):</label>
+        <input type="number" id="sdRate" value="2.5" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-item">
+        <label for="labourCessRate">Labour Cess Rate (%):</label>
+        <input type="number" id="labourCessRate" value="1" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-item">
+        <label for="gstRate">GST Rate (CGST + SGST) (%):</label>
+        <input type="number" id="gstRate" value="2" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-controls">
+        <button id="updateFormulas">Update Formulas</button>
+        <button id="resetFormulas">Reset to Default</button>
+      </div>
     </div>
 
     <table>
@@ -326,8 +347,9 @@
         </tr>
         <tr>
           <td>9</td>
-          <!-- Payee (Fixed text, no border) -->
-          <td>Payee: <span id="payeeName" class="fixed-field">Sajal Biswas</span></td>
+          <td>Payee:
+            <input type="text" id="payeeName" value="Sajal Biswas" style="width: 200px; display: inline;">
+          </td>
           <td id="netAmount">₹9,39,575.00</td>
         </tr>
       </tbody>
@@ -337,18 +359,14 @@
       <p id="amountInWords">Rupees Nine Lakh Thirty Nine Thousand Five Hundred Seventy Five Only</p>
     </div>
 
-    <!-- Deputy Secretary sanction (Fixed text) -->
     <div class="form-group">
-      <label>The Expenditure will be made out of the total fund received from the</label>
-      <span id="fundSource" class="fixed-field">
-        Deputy Secretary, PWD(R&B), Vide memo No. F. 1022/PV/Q1(BSA)/2025. Dated, 12.08.2025
-      </span>
+      <label for="fundSource">The Expenditure will be made out of the total fund received from the</label>
+      <input type="text" id="fundSource" value="Deputy Secretary, PWD(R&B), Vide memo No. F. 1022/PV/Q1(BSA)/2025. Dated, 12.08.2025">
     </div>
 
-    <!-- Head of Account (Fixed text) -->
     <div class="form-group">
-      <label>The Expenditure involved on this account will be debatable to the Head of Account:</label>
-      <span id="accountHead" class="fixed-field">[Enter Head of Account details]</span>
+      <label for="accountHead">The Expenditure involved on this account will be debatable to the Head of Account:</label>
+      <input type="text" id="accountHead" placeholder="Enter Head of Account details">
     </div>
 
     <div class="footer">
@@ -360,9 +378,8 @@
       </div>
     </div>
 
-    <!-- Fixed Copy To section -->
     <div class="form-group copy-section">
-      <label>Copy to: The Treasury Officer, Belonia Treasury for kind information please.</label>
+      <label for="copyTo">Copy to: The Treasury Officer, Belonia Treasury for kind information please.</label>
     </div>
 
     <div class="controls no-print">
@@ -389,19 +406,15 @@
     }
 
     function numberToWords(num) {
-      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-                   'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
       const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
       if (num === 0) return 'Zero';
-
       function convertLessThanThousand(n) {
         if (n === 0) return '';
         else if (n < 20) return ones[n] + ' ';
         else if (n < 100) return tens[Math.floor(n / 10)] + ' ' + ones[n % 10] + ' ';
         else return ones[Math.floor(n / 100)] + ' Hundred ' + convertLessThanThousand(n % 100);
       }
-
       function convert(n) {
         if (n < 10000000) {
           if (n < 1000) return convertLessThanThousand(n);
@@ -413,25 +426,20 @@
         }
         return 'Number too large';
       }
-
       let result = convert(Math.floor(num)) + 'Only';
       return 'Rupees ' + result.charAt(0).toUpperCase() + result.slice(1);
     }
 
     function numberToWordsSanction(num) {
-      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-                   'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
       const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
       if (num === 0) return 'Zero';
-
       function convertLessThanThousand(n) {
         if (n === 0) return '';
         else if (n < 20) return ones[n] + ' ';
         else if (n < 100) return tens[Math.floor(n / 10)] + ' ' + ones[n % 10] + ' ';
         else return ones[Math.floor(n / 100)] + ' Hundred ' + convertLessThanThousand(n % 100);
       }
-
       function convert(n) {
         if (n < 10000000) {
           if (n < 1000) return convertLessThanThousand(n);
@@ -443,17 +451,16 @@
         }
         return 'Number too large';
       }
-
       let result = convert(Math.floor(num));
       return result.trim();
     }
 
     function updateCalculations() {
       let gross = parseFloat(document.getElementById('grossAmount').value) || 0;
-      let incomeTaxRate = parseFloat(document.getElementById('incomeTaxRate')?.value) || 0;
-      let sdRate = parseFloat(document.getElementById('sdRate')?.value) || 0;
-      let labourCessRate = parseFloat(document.getElementById('labourCessRate')?.value) || 0;
-      let gstRate = parseFloat(document.getElementById('gstRate')?.value) || 0;
+      let incomeTaxRate = parseFloat(document.getElementById('incomeTaxRate').value) || 0;
+      let sdRate = parseFloat(document.getElementById('sdRate').value) || 0;
+      let labourCessRate = parseFloat(document.getElementById('labourCessRate').value) || 0;
+      let gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
       let timeExtension = parseFloat(document.getElementById('timeExtension').value) || 0;
       let roadRoller = parseFloat(document.getElementById('roadRoller').value) || 0;
       let bitumenDrum = parseFloat(document.getElementById('bitumenDrum').value) || 0;
@@ -462,6 +469,7 @@
       let sd = Math.round(gross * (sdRate / 100));
       let labourCess = Math.round(gross * (labourCessRate / 100));
       let gst = Math.round(gross * (gstRate / 100));
+
       let netAmount = Math.round(gross - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum);
 
       document.getElementById('sanctionAmount').innerText = formatCurrency(gross);
@@ -478,11 +486,21 @@
       document.getElementById('amountInWords').innerText = numberToWords(netAmount);
     }
 
-    document.querySelectorAll('#grossAmount, #timeExtension, #roadRoller, #bitumenDrum')
+    document.querySelectorAll('#grossAmount, #incomeTaxRate, #sdRate, #labourCessRate, #gstRate, #timeExtension, #roadRoller, #bitumenDrum')
       .forEach(el => el.addEventListener('input', updateCalculations));
 
+    document.getElementById('updateFormulas').addEventListener('click', updateCalculations);
+
+    document.getElementById('resetFormulas').addEventListener('click', () => {
+      document.getElementById('incomeTaxRate').value = 0.8475;
+      document.getElementById('sdRate').value = 2.5;
+      document.getElementById('labourCessRate').value = 1;
+      document.getElementById('gstRate').value = 2;
+      updateCalculations();
+    });
+
     document.getElementById('printBtn').addEventListener('click', () => window.print());
-    document.getElementById('previewBtn').addEventListener('click', () => window.print());
+    document.getElementById('previewBtn').addEventListener('click', () => { window.print(); });
 
     updateCalculations();
   </script>
