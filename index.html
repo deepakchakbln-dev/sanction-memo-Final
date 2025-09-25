@@ -3,212 +3,504 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sanction Order Generator</title>
+  <title>Sanction Memo Software</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      line-height: 1.6;
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    h2 {
-      text-align: center;
-      text-decoration: underline;
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5;
+      color: #333;
     }
     .container {
       max-width: 900px;
-      margin: auto;
+      margin: 0 auto;
+      background-color: white;
+      padding: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 5px;
     }
-    .field {
-      margin-bottom: 10px;
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 15px;
     }
-    label {
-      font-weight: bold;
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #2c3e50;
     }
-    input[type="text"], input[type="number"] {
-      border: 1px solid #ccc;
-      padding: 4px;
-      width: 100%;
-      margin-top: 4px;
+    .header p {
+      margin: 3px 0;
+      font-size: 13px;
     }
-    .readonly {
-      border: none;
-      background: transparent;
-      font-weight: bold;
+    .memo-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 13px;
     }
-    .amount-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    .amount-table th, .amount-table td {
-      border: 1px solid #000;
-      padding: 6px;
+    .memo-info div {
       text-align: left;
     }
-    .signature {
-      margin-top: 50px;
-      text-align: right;
+    .form-group {
+      margin-bottom: 15px;
     }
-    .buttons {
-      margin: 20px 0;
-      text-align: center;
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #2c3e50;
     }
-    .buttons button {
-      padding: 10px 20px;
-      margin: 5px;
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 3px rgba(52, 152, 219, 0.3);
+    }
+    /* ✅ Head of Account input ka border hata diya */
+    #accountHead {
+      border: none;
+      outline: none;
+      border-bottom: 1px solid #ddd; /* optional underline */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .formula-section {
+      background-color: #f9f9f9;
+      padding: 12px;
+      border-radius: 5px;
+      margin: 15px 0;
+      border-left: 4px solid #3498db;
+    }
+    .formula-item {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .formula-item label {
+      width: 180px;
+      margin-bottom: 0;
+    }
+    .formula-item input {
+      width: 90px;
+      margin-left: 10px;
+    }
+    .formula-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    button {
+      padding: 8px 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .result {
+      font-weight: bold;
+      background-color: #e9f7e9;
+      padding: 6px;
+      border-radius: 4px;
+      margin-top: 5px;
+      border-left: 4px solid #2ecc71;
+      font-size: 13px;
+    }
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .signature {
+      text-align: right;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .signature p {
+      margin: 2px 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .print-only {
+      display: none;
+    }
+    .sanction-text {
+      font-size: 13px;
+      margin-bottom: 15px;
+      text-align: justify;
+      line-height: 1.4;
+    }
+    .editable-amount {
+      width: 120px;
+      display: inline-block;
+    }
+    .copy-section {
+      margin-top: 50px;
     }
     @media print {
-      .buttons, .field input[type="number"] {
+      body {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+        font-size: 12px;
+      }
+      .container {
+        box-shadow: none;
+        padding: 15px;
+        max-width: 100%;
+      }
+      .formula-section, .formula-controls, button, .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block;
+      }
+      table {
+        page-break-inside: avoid;
+        font-size: 12px;
+      }
+      .header h1 {
+        font-size: 18px;
+      }
+      .header p, .memo-info, .sanction-text, .signature p {
+        font-size: 11px;
+      }
+      th, td {
+        padding: 6px;
+      }
+      .editable-amount {
         display: none;
       }
-      input.readonly {
-        border: none;
-        background: transparent;
+      .amount-value {
+        display: inline;
+      }
+      h2 {
+        text-align: center;
+      }
+      .footer {
+        justify-content: flex-end;
+      }
+      .signature {
+        text-align: right;
+        font-size: 11px;
+      }
+      .result {
+        margin-top: 5px;
+      }
+      .copy-section {
+        margin-top: 40px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>SANCTION ORDER</h2>
-
-    <div class="field">
-      <label>Name of Work:</label>
-      <span id="workName">Maintenance and Repair Work</span>
+    <div class="header">
+      <p>GOVERNMENT OF TRIPURA</p>
+      <p>OFFICE OF THE EXECUTIVE ENGINEER</p>
+      <p>BELONIA DIVISION, PWD(R&B)</p>
+      <p>BELONIA, SOUTH TRIPURA</p>
+      <div class="memo-info">
+        <div>
+          <strong>Sanction Memo No:</strong> F.5(11)/EE(PWD)/R&B/BLN/DIVN/
+          <input type="text" id="memoSuffix" placeholder="Suffix" style="width: 80px; display: inline;">
+        </div>
+        <div>
+          <strong>Dated:</strong> <input type="date" id="memoDate" style="width: 150px; display: inline;">
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Sanctioned Amount:</label>
-      <span id="sanctionAmount"></span> 
-      (<span id="sanctionAmountWords"></span>)
+    <h2 style="font-size: 16px; margin-bottom: 10px; text-align: center;">Sanction Memo</h2>
+
+    <div class="sanction-text">
+      Expenditure sanction is hereby accorded not exceeding an amount of Rs.
+      <span id="sanctionAmountText">10,00,000</span>/----- (Rupees
+      <span id="sanctionAmountWords">Ten Lakh</span>) Only hereby accorded to drawn in Fully Voucher Bill bearing the cost for the work.
     </div>
 
-    <div class="field">
-      <label>Head of Account:</label>
-      <input type="text" id="headOfAccount" placeholder="Enter Head of Account">
+    <div class="form-group">
+      <label for="workName">Name of Work:</label>
+      <input type="text" id="workName" value="FDR / Nto. Of different roads under Rajnagar Sub-Division">
     </div>
 
-    <div class="field">
-      <label>Payee Name:</label>
-      <span id="payeeName">M/s ABC Construction</span>
+    <div class="form-group no-print">
+      <label for="grossAmount">Gross Amount (₹):</label>
+      <input type="number" id="grossAmount" value="1000000" min="0" step="1000">
     </div>
 
-    <table class="amount-table">
+    <div class="formula-section no-print">
+      <h3 style="font-size: 14px; margin-top: 0;">Deduction Formulas</h3>
+      <div class="formula-item">
+        <label for="incomeTaxRate">Income Tax Rate (%):</label>
+        <input type="number" id="incomeTaxRate" value="0.8475" min="0" max="100" step="0.0001">
+      </div>
+      <div class="formula-item">
+        <label for="sdRate">SD Rate (%):</label>
+        <input type="number" id="sdRate" value="2.5" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-item">
+        <label for="labourCessRate">Labour Cess Rate (%):</label>
+        <input type="number" id="labourCessRate" value="1" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-item">
+        <label for="gstRate">GST Rate (CGST + SGST) (%):</label>
+        <input type="number" id="gstRate" value="2" min="0" max="100" step="0.1">
+      </div>
+      <div class="formula-controls">
+        <button id="updateFormulas">Update Formulas</button>
+        <button id="resetFormulas">Reset to Default</button>
+      </div>
+    </div>
+
+    <table>
       <thead>
         <tr>
-          <th>Particulars</th>
-          <th>Amount (₹)</th>
+          <th width="8%">Sl. No.</th>
+          <th width="62%">Particulars</th>
+          <th width="30%">Amount (in ₹)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Gross Amount</td>
-          <td><input type="number" id="grossAmount" value="0"></td>
+          <td>1</td>
+          <td>Sanction this memo</td>
+          <td id="sanctionAmount">₹10,00,000.00</td>
         </tr>
         <tr>
-          <td>Income Tax @ 2%</td>
-          <td><span id="incomeTax"></span></td>
+          <td>2</td>
+          <td>Less Income Tax (-)</td>
+          <td id="incomeTax">₹8,475.00</td>
         </tr>
         <tr>
-          <td>Security Deposit @ 10%</td>
-          <td><span id="sd"></span></td>
+          <td>3</td>
+          <td>Less SD (-)</td>
+          <td id="sd">₹25,000.00</td>
         </tr>
         <tr>
-          <td>Labour Cess @ 1%</td>
-          <td><span id="labourCess"></span></td>
+          <td>4</td>
+          <td>Less Labour Cess, Beneficiary ID-194646 (-)</td>
+          <td id="labourCess">₹10,000.00</td>
         </tr>
         <tr>
-          <td>GST @ 12%</td>
-          <td><span id="gst"></span></td>
+          <td>5</td>
+          <td>Less: GST (CGST+SGST) (-)</td>
+          <td id="gst">₹16,950.00</td>
         </tr>
         <tr>
-          <td>Time Extension Penalty</td>
-          <td><input type="number" id="timeExtension" value="0"></td>
+          <td>6</td>
+          <td>Less: Time Extension Leavy
+            <input type="number" id="timeExtension" class="editable-amount" value="0" min="0" step="100">
+            <span class="amount-value">₹0.00</span>
+          </td>
+          <td id="timeExtensionAmount">₹0.00</td>
         </tr>
         <tr>
-          <td>Road Roller Charges</td>
-          <td><input type="number" id="roadRoller" value="0"></td>
+          <td>7</td>
+          <td>Less: Road Roller
+            <input type="number" id="roadRoller" class="editable-amount" value="0" min="0" step="100">
+            <span class="amount-value">₹0.00</span>
+          </td>
+          <td id="roadRollerAmount">₹0.00</td>
         </tr>
         <tr>
-          <td>Bitumen Drum Charges</td>
-          <td><input type="number" id="bitumenDrum" value="0"></td>
+          <td>8</td>
+          <td>Less: Bitumen Drum
+            <input type="number" id="bitumenDrum" class="editable-amount" value="0" min="0" step="100">
+            <span class="amount-value">₹0.00</span>
+          </td>
+          <td id="bitumenDrumAmount">₹0.00</td>
         </tr>
         <tr>
-          <th>Net Amount Payable</th>
-          <th><span id="netAmount"></span></th>
-        </tr>
-        <tr>
-          <td colspan="2">In Words: <span id="amountInWords"></span></td>
+          <td>9</td>
+          <td>Payee:
+            <input type="text" id="payeeName" value="Sajal Biswas" style="width: 200px; display: inline;">
+          </td>
+          <td id="netAmount">₹9,39,575.00</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="signature">
-      <input type="text" class="readonly" value="Sajal Biswas, Deputy Secretary">
+    <div class="result">
+      <p id="amountInWords">Rupees Nine Lakh Thirty Nine Thousand Five Hundred Seventy Five Only</p>
     </div>
 
-    <div class="field">
-      <label>Copy to:</label>
-      <span>The Treasury Officer</span>
+    <div class="form-group">
+      <label for="fundSource">The Expenditure will be made out of the total fund received from the</label>
+      <input type="text" id="fundSource" value="Deputy Secretary, PWD(R&B), Vide memo No. F. 1022/PV/Q1(BSA)/2025. Dated, 12.08.2025">
     </div>
 
-    <div class="buttons">
-      <button id="previewBtn">Preview</button>
-      <button id="printBtn">Print</button>
+    <div class="form-group">
+      <label for="accountHead">The Expenditure involved on this account will be debatable to the Head of Account:</label>
+      <input type="text" id="accountHead" placeholder="Enter Head of Account details">
+    </div>
+
+    <div class="footer">
+      <div class="signature">
+        <p>(Er. Litan Debnath)</p>
+        <p>Executive Engineer</p>
+        <p>Belonia Division, PWD(R&B)</p>
+        <p>Belonia, South Tripura</p>
+      </div>
+    </div>
+
+    <div class="form-group copy-section">
+      <label for="copyTo">Copy to: The Treasury Officer, Belonia Treasury for kind information please.</label>
+    </div>
+
+    <div class="controls no-print">
+      <button id="printBtn">Print Sanction Memo</button>
+      <button id="saveBtn">Save Data</button>
+      <button id="clearBtn">Clear Form</button>
+      <button id="previewBtn">Print Preview</button>
     </div>
   </div>
 
   <script>
-    function formatCurrency(num) {
-      return "₹" + num.toLocaleString("en-IN");
+    function formatCurrency(amount) {
+      return '₹' + new Intl.NumberFormat('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    }
+
+    function formatNumber(amount) {
+      return new Intl.NumberFormat('en-IN', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(amount);
     }
 
     function numberToWords(num) {
-      const a = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-      const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      if (num === 0) return 'Zero';
+      function convertLessThanThousand(n) {
+        if (n === 0) return '';
+        else if (n < 20) return ones[n] + ' ';
+        else if (n < 100) return tens[Math.floor(n / 10)] + ' ' + ones[n % 10] + ' ';
+        else return ones[Math.floor(n / 100)] + ' Hundred ' + convertLessThanThousand(n % 100);
+      }
+      function convert(n) {
+        if (n < 10000000) {
+          if (n < 1000) return convertLessThanThousand(n);
+          else if (n < 100000) {
+            return convertLessThanThousand(Math.floor(n / 1000)) + 'Thousand ' + convertLessThanThousand(n % 1000);
+          } else {
+            return convertLessThanThousand(Math.floor(n / 100000)) + 'Lakh ' + convert(Math.floor(n % 100000));
+          }
+        }
+        return 'Number too large';
+      }
+      let result = convert(Math.floor(num)) + 'Only';
+      return 'Rupees ' + result.charAt(0).toUpperCase() + result.slice(1);
+    }
 
-      if ((num = num.toString()).length > 9) return "Overflow";
-      let n = ("000000000" + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-      if (!n) return; 
-      let str = "";
-      str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + " " + a[n[1][1]]) + " Crore " : "";
-      str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + " " + a[n[2][1]]) + " Lakh " : "";
-      str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + " " + a[n[3][1]]) + " Thousand " : "";
-      str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + " " + a[n[4][1]]) + " Hundred " : "";
-      str += (n[5] != 0) ? ((str != "") ? "and " : "") + (a[Number(n[5])] || b[n[5][0]] + " " + a[n[5][1]]) + " " : "";
-      return str.trim() + " Only";
+    function numberToWordsSanction(num) {
+      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      if (num === 0) return 'Zero';
+      function convertLessThanThousand(n) {
+        if (n === 0) return '';
+        else if (n < 20) return ones[n] + ' ';
+        else if (n < 100) return tens[Math.floor(n / 10)] + ' ' + ones[n % 10] + ' ';
+        else return ones[Math.floor(n / 100)] + ' Hundred ' + convertLessThanThousand(n % 100);
+      }
+      function convert(n) {
+        if (n < 10000000) {
+          if (n < 1000) return convertLessThanThousand(n);
+          else if (n < 100000) {
+            return convertLessThanThousand(Math.floor(n / 1000)) + 'Thousand ' + convertLessThanThousand(n % 1000);
+          } else {
+            return convertLessThanThousand(Math.floor(n / 100000)) + 'Lakh ' + convert(Math.floor(n % 100000));
+          }
+        }
+        return 'Number too large';
+      }
+      let result = convert(Math.floor(num));
+      return result.trim();
     }
 
     function updateCalculations() {
       let gross = parseFloat(document.getElementById('grossAmount').value) || 0;
+      let incomeTaxRate = parseFloat(document.getElementById('incomeTaxRate').value) || 0;
+      let sdRate = parseFloat(document.getElementById('sdRate').value) || 0;
+      let labourCessRate = parseFloat(document.getElementById('labourCessRate').value) || 0;
+      let gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
       let timeExtension = parseFloat(document.getElementById('timeExtension').value) || 0;
       let roadRoller = parseFloat(document.getElementById('roadRoller').value) || 0;
       let bitumenDrum = parseFloat(document.getElementById('bitumenDrum').value) || 0;
 
-      let incomeTax = Math.round(gross * 0.02);
-      let sd = Math.round(gross * 0.10);
-      let labourCess = Math.round(gross * 0.01);
-      let gst = Math.round(gross * 0.12);
+      let incomeTax = Math.round(gross * (incomeTaxRate / 100));
+      let sd = Math.round(gross * (sdRate / 100));
+      let labourCess = Math.round(gross * (labourCessRate / 100));
+      let gst = Math.round(gross * (gstRate / 100));
 
       let netAmount = Math.round(gross - incomeTax - sd - labourCess - gst - timeExtension - roadRoller - bitumenDrum);
 
       document.getElementById('sanctionAmount').innerText = formatCurrency(gross);
-      document.getElementById('sanctionAmountWords').innerText = numberToWords(gross);
+      document.getElementById('sanctionAmountText').innerText = formatNumber(gross);
+      document.getElementById('sanctionAmountWords').innerText = numberToWordsSanction(gross);
       document.getElementById('incomeTax').innerText = formatCurrency(incomeTax);
       document.getElementById('sd').innerText = formatCurrency(sd);
       document.getElementById('labourCess').innerText = formatCurrency(labourCess);
       document.getElementById('gst').innerText = formatCurrency(gst);
+      document.getElementById('timeExtensionAmount').innerText = formatCurrency(timeExtension);
+      document.getElementById('roadRollerAmount').innerText = formatCurrency(roadRoller);
+      document.getElementById('bitumenDrumAmount').innerText = formatCurrency(bitumenDrum);
       document.getElementById('netAmount').innerText = formatCurrency(netAmount);
       document.getElementById('amountInWords').innerText = numberToWords(netAmount);
     }
 
-    document.querySelectorAll('#grossAmount, #timeExtension, #roadRoller, #bitumenDrum')
+    document.querySelectorAll('#grossAmount, #incomeTaxRate, #sdRate, #labourCessRate, #gstRate, #timeExtension, #roadRoller, #bitumenDrum')
       .forEach(el => el.addEventListener('input', updateCalculations));
 
+    document.getElementById('updateFormulas').addEventListener('click', updateCalculations);
+
+    document.getElementById('resetFormulas').addEventListener('click', () => {
+      document.getElementById('incomeTaxRate').value = 0.8475;
+      document.getElementById('sdRate').value = 2.5;
+      document.getElementById('labourCessRate').value = 1;
+      document.getElementById('gstRate').value = 2;
+      updateCalculations();
+    });
+
     document.getElementById('printBtn').addEventListener('click', () => window.print());
-    document.getElementById('previewBtn').addEventListener('click', () => window.print());
+    document.getElementById('previewBtn').addEventListener('click', () => { window.print(); });
 
     updateCalculations();
   </script>
